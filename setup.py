@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='code-metrics',
-    version='1.0.0',
+    version='1.0.1',
     description='Code analysis tool',
     author='Laura Feier',
     author_email='feierlaura10@gmail.com',
