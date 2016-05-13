@@ -36,12 +36,24 @@ def get_commit_files(git_repo, commit_sha):
     return Commit(git_repo, commit_sha).stats.files
 
 
-def get_changed_files(git_repo, from_commit, to_commit, match_only=None):
+def is_deleted(file_name, files_changed):
+    deleted_lines = files_changed[file_name]['deletions']
+    lines_count = files_changed[file_name]['lines']
+
+    return deleted_lines == lines_count
+
+
+def get_changed_files(git_repo, from_commit, to_commit, match_only=None, exclude_deleted=False):
     revision = get_revision(from_commit, to_commit)
     files = set()
+    deleted_files = []
     for commit in git_repo.iter_commits(revision):
         changed = commit.stats.files.keys()
         if match_only:
             changed = [name for name in changed if re.match(match_only, name)]
+        if exclude_deleted:
+            deleted_files.extend(filter(lambda file_name: is_deleted(file_name, commit.stats.files), changed))
         files.update(set(changed))
+    if exclude_deleted:
+        files = files - set(deleted_files)
     return files
