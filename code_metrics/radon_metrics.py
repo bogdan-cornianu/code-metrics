@@ -1,8 +1,12 @@
+import logging
+
 import operator
 from collections import OrderedDict
 import radon.complexity as cc_mod
 from radon.cli.harvest import CCHarvester, MIHarvester, RawHarvester
 from radon.cli import Config
+
+logger = logging.getLogger(__name__)
 
 
 def get_files_complexity_data(paths, ignore):
@@ -23,6 +27,9 @@ def get_files_complexity_data(paths, ignore):
     data = []
     for filename, functions in harvester.results:
         if not functions:
+            continue
+        if 'error' in functions:
+            logger.error('Invalid code! Error %s in %s', functions['error'], filename)
             continue
         scores = [
             function_obj.complexity
