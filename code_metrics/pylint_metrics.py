@@ -1,8 +1,8 @@
 import re
 try:
-    from cStringIO import StringIO
-except ImportError:
     from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from pylint import lint
 from pylint.reporters.text import TextReporter
